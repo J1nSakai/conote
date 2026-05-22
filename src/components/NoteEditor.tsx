@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { Note, NoteUpdate } from "@/lib/types";
 import { updateNote, deleteNote } from "@/actions/notes";
 import { toast } from "sonner";
-import { ArrowLeft, Trash2, Check, Loader2, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Trash2,
+  Check,
+  Loader2,
+  AlertCircle,
+  Play,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -19,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { YoutubeEmbed } from "@/components/YoutubeEmbed";
 
 interface NoteEditorProps {
   initialNote: Note;
@@ -37,6 +45,8 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
     "idle" | "saving" | "saved" | "error"
   >("idle");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [showYoutube, setShowYoutube] = useState(false);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const initialMount = useRef(true);
@@ -220,6 +230,15 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowYoutube((v) => !v)}
+            className="h-8 w-8 text-[#CBC3D7]/50 hover:bg-[#EF4444]/10 hover:text-[#EF4444] border-white/10 rounded-sm cursor-pointer"
+            title="Toggle YouTube embed"
+          >
+            <Play className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
@@ -242,6 +261,16 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
           placeholder="Start typing your recalled lecture details here..."
           className="w-full text-base bg-[#121212] p-6 rounded-sm border border-white/5 text-[#E5E2E1] placeholder-[#CBC3D7]/25 focus:border-[#0D9488] focus:outline-none min-h-[300px] leading-relaxed resize-none transition-all duration-300"
         />
+
+        {showYoutube && (
+          <YoutubeEmbed
+            onRemove={() => {
+              setShowYoutube(false);
+              initialNote.video_url = "";
+            }}
+            url={initialNote.video_url}
+          />
+        )}
 
         {/* Helper footer */}
         <div className="flex justify-between items-center text-[10px] text-[#CBC3D7]/40 px-2 select-none">
