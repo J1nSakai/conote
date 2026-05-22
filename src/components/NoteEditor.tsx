@@ -31,9 +31,11 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
   // Local editor state
   const [title, setTitle] = useState(initialNote.title);
   const [content, setContent] = useState(initialNote.content);
-  
+
   // Save tracking status: 'idle' | 'saving' | 'saved' | 'error'
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "saved" | "error"
+  >("idle");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -79,11 +81,11 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
 
       await updateNote(initialNote.id, updates);
       setSaveStatus("saved");
-      
+
       if (explicit) {
         toast.success("Note saved successfully");
       }
-      
+
       // Re-trigger router refresh to fetch fresh server state
       router.refresh();
     } catch (error: any) {
@@ -123,7 +125,7 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
 
   // Content Textarea auto-sizing helper to naturally adapt page flow
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
+
   useEffect(() => {
     if (textareaRef.current) {
       // Reset height to calculate scroll height properly
@@ -137,9 +139,14 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
       {/* 1. Header Toolbar pane */}
       <div className="flex items-center justify-between border-b border-white/5 pb-4 select-none">
         <div className="flex items-center gap-3">
-          <Link href="/notes" className="p-2 rounded-sm hover:bg-[#1C1B1B] text-[#CBC3D7] hover:text-[#E5E2E1] transition-all duration-200">
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+          <Button
+            disabled={saveStatus === "saving"}
+            className="p-2 rounded-sm hover:bg-[#1C1B1B] text-[#CBC3D7] hover:text-[#E5E2E1] transition-all duration-200"
+          >
+            <Link href="/notes">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
           <span className="text-xs text-[#CBC3D7]/40 truncate max-w-[180px] sm:max-w-xs">
             {title || "Untitled Note"}
           </span>
@@ -151,7 +158,8 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
           <div className="flex items-center gap-1.5 text-xs">
             {saveStatus === "saving" && (
               <span className="flex items-center gap-1 text-[#CBC3D7]/60">
-                <Loader2 className="h-3 w-3 animate-spin text-[#0D9488]" /> Saving...
+                <Loader2 className="h-3 w-3 animate-spin text-[#0D9488]" />{" "}
+                Saving...
               </span>
             )}
             {saveStatus === "saved" && (
@@ -165,11 +173,16 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
               </span>
             )}
             {saveStatus === "idle" && (
-              <span className="text-[#CBC3D7]/30 text-[10px]">Auto-saves active</span>
+              <span className="text-[#CBC3D7]/30 text-[10px]">
+                Auto-saves active
+              </span>
             )}
           </div>
 
-          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialog
+            open={deleteDialogOpen}
+            onOpenChange={setDeleteDialogOpen}
+          >
             <AlertDialogTrigger asChild>
               <Button
                 variant="outline"
@@ -182,9 +195,12 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
             </AlertDialogTrigger>
             <AlertDialogContent className="bg-[#121212] border border-white/5 text-[#E5E2E1]">
               <AlertDialogHeader>
-                <AlertDialogTitle className="text-white">Delete Note Workspace</AlertDialogTitle>
+                <AlertDialogTitle className="text-white">
+                  Delete Note Workspace
+                </AlertDialogTitle>
                 <AlertDialogDescription className="text-[#CBC3D7] text-xs">
-                  Are you sure you want to delete this active lecture note? All contents and recalled summaries will be permanently lost.
+                  Are you sure you want to delete this active lecture note? All
+                  contents and recalled summaries will be permanently lost.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter className="gap-2 sm:gap-0">
@@ -226,11 +242,17 @@ export function NoteEditor({ initialNote }: NoteEditorProps) {
           placeholder="Start typing your recalled lecture details here..."
           className="w-full text-base bg-[#121212] p-6 rounded-sm border border-white/5 text-[#E5E2E1] placeholder-[#CBC3D7]/25 focus:border-[#0D9488] focus:outline-none min-h-[300px] leading-relaxed resize-none transition-all duration-300"
         />
-        
+
         {/* Helper footer */}
         <div className="flex justify-between items-center text-[10px] text-[#CBC3D7]/40 px-2 select-none">
           <span>Character count: {content.length}</span>
-          <span>Press <kbd className="bg-white/5 border border-white/10 px-1 rounded-sm text-[9px] font-mono text-[#E5E2E1]">Ctrl + S</kbd> to save immediately</span>
+          <span>
+            Press{" "}
+            <kbd className="bg-white/5 border border-white/10 px-1 rounded-sm text-[9px] font-mono text-[#E5E2E1]">
+              Ctrl + S
+            </kbd>{" "}
+            to save immediately
+          </span>
         </div>
       </div>
     </div>
