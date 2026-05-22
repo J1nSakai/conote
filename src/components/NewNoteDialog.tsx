@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field } from "@/components/ui/field";
+import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Note } from "@/lib/types";
 import { Plus } from "lucide-react";
@@ -25,6 +25,7 @@ const NewNoteDialog = ({
   buttonText?: string;
 }) => {
   const [title, setTitle] = useState("");
+  const [video_url, setVideoURL] = useState("");
   const [addingNote, setAddingNote] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,9 +41,11 @@ const NewNoteDialog = ({
       newNote = await createNote({
         title,
         content: "",
+        video_url,
       });
 
       setTitle("");
+      setVideoURL("");
     } catch (error) {
       console.error("Failed to create note on server:", error);
 
@@ -76,15 +79,27 @@ const NewNoteDialog = ({
             </DialogDescription>
           </DialogHeader>
 
-          <Field>
-            <Input
-              id="new-note-title"
-              name="new-note-title"
-              placeholder="Note Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </Field>
+          <FieldGroup>
+            <Field>
+              <Input
+                id="new-note-title"
+                name="new-note-title"
+                placeholder="Note Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </Field>
+
+            <Field>
+              <Input
+                id="new-note-video_url"
+                name="new-note-video_url"
+                placeholder="Youtube Video URL (optional)"
+                value={video_url}
+                onChange={(e) => setVideoURL(e.target.value)}
+              />
+            </Field>
+          </FieldGroup>
 
           <DialogFooter>
             <DialogClose asChild>
